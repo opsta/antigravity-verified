@@ -17,6 +17,6 @@ Contract: <command> (exit <code>)
 
 ## Core files touched
 
-<files listed in CORE.lock changed in the diff, or "none">
+<files listed in CORE.lock, CORE.lock itself, package.json, build/test/ts config and CI workflow changed in the diff, or "none">
 
 Gate 3: awaiting human acceptance

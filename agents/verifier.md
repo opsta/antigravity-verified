@@ -17,7 +17,7 @@ Input: a spec path and `git diff --stat <base>..HEAD`.
 2. For each criterion find evidence in the code and tests. Prefer running the relevant test or command. Evidence kinds: `test` (test name and pass), `command` (command and exit code), `artifact` (file path).
 3. A test counts only if you saw it pass. Reading a test is not evidence.
 4. Flag every test file that appears in the diff stat.
-5. Flag every file listed in `CORE.lock` (if it exists) that appears in the diff stat.
+5. Flag every file listed in `CORE.lock` (if it exists) that appears in the diff stat. Also flag `CORE.lock` itself, `package.json`, vite/vitest/tsconfig files and `.github/workflows/*`.
 
 Output only these table rows, then nothing else. Result is `pass` or `fail`; no evidence means `fail`.
 

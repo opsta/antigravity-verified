@@ -14,7 +14,7 @@ Run these steps in order. Do not skip any.
 5. **Write `VERIFY.md`** at the repo root from `assets/VERIFY.template.md`. Fill the table with every row, then:
    - `Untested criteria`: every criterion with no evidence.
    - `Tests modified`: test files changed in the diff.
-   - `Core files touched`: files in `CORE.lock` changed in the diff.
+   - `Core files touched`: files in `CORE.lock` changed in the diff, plus `CORE.lock` itself, `package.json`, vite/vitest/tsconfig files and `.github/workflows/*` if changed.
 6. **Stop at Gate 3.** Tell the human `VERIFY.md` is ready and wait. Do not edit it to say accepted, and do not claim the work is done until they accept it.
 
 Evidence kinds are `test`, `command` and `artifact`. A criterion without evidence is `fail`, never `pass`.
