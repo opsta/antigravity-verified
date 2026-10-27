@@ -10,9 +10,8 @@ export const BANNED = Buffer.from(
   'base64',
 ).toString().split(',');
 
-// Two short words match whole tokens only (they occur inside ordinary words). Chosen by index so
-// the source holds no banned literal: positions 8 and 13 of the list.
-const WHOLE_TOKEN = new Set([BANNED[8], BANNED[13]]);
+// Short words that must match whole tokens only (they occur inside ordinary words), base64 too.
+const WHOLE_TOKEN = new Set(Buffer.from('Y3Vyc29yLGF3cw==', 'base64').toString().split(','));
 const LIMITS = [
   [/^rules\/[^/]+\.md$/, 1536],
   [/^skills\/[^/]+\/SKILL\.md$/, 3072],

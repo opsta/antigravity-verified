@@ -16,10 +16,10 @@ Never edit or delete a test to make it pass. If a test is wrong, stop and ask th
 
 If `CORE.lock` exists, never edit the files it lists.
 
-Stop and ask the human at three gates, and do not continue until they answer:
+Stop and ask the human at three gates. Do not continue until they answer:
 
-1. Gate 1 spec approved
-2. Gate 2 plan approved
-3. Gate 3 VERIFY.md accepted
+1. After you write or update the spec, stop: **Gate 1 spec approved**.
+2. After you write the plan, stop: **Gate 2 plan approved**.
+3. After you write `VERIFY.md`, stop: **Gate 3 VERIFY.md accepted**.
 
 Before you claim the work is done, run the `/verify` skill. Only the human can pass Gate 3.

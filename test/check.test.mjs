@@ -37,10 +37,18 @@ test('every banned word is caught, case-insensitively', () => {
   }
 });
 
-test('short words only match as whole tokens', () => {
-  const dir = fixture({ 'a.md': `laws, crosswalk, ${BANNED[8]}s, ${BANNED[13]}x are fine\n` });
-  assert.equal(run(dir).status, 0);
-  rmSync(dir, { recursive: true });
+test('short words match whole tokens only; others match as substrings', () => {
+  const cur = BANNED.find((w) => w.startsWith('cur'));
+  const wt = BANNED.find((w) => w.length === 3 && w.startsWith('a') && w.endsWith('s'));
+  const sub = BANNED.find((w) => w.startsWith('az'));
+  const ok = fixture({ 'a.md': `laws, crosswalk, pre${cur}, ${cur}s, ${wt}x are fine\n` });
+  assert.equal(run(ok).status, 0);
+  rmSync(ok, { recursive: true });
+  for (const text of [`a ${cur} here`, `a ${cur.toUpperCase()}.`, `${wt}-x`, `${sub[0].toUpperCase()}${sub.slice(1)}AD`]) {
+    const bad = fixture({ 'a.md': text + '\n' });
+    assert.equal(run(bad).status, 1, text);
+    rmSync(bad, { recursive: true });
+  }
 });
 
 test('oversize rule prints OVERSIZE', () => {
