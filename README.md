@@ -17,7 +17,7 @@ a check that the finished work meets every acceptance criterion, with evidence, 
 ## Install
 
 ```
-agy plugin install https://github.com/<opsta-org>/verified
+agy plugin install https://github.com/opsta/antigravity-verified
 ```
 
 Or from a local folder: `agy plugin install ./verified`. Check with `agy plugin list`.
