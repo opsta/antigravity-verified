@@ -60,3 +60,21 @@ test('clean fixture exits 0; node_modules and .git are skipped', () => {
   assert.equal(run(dir).status, 0);
   rmSync(dir, { recursive: true });
 });
+
+import { check } from '../scripts/check.mjs';
+import { existsSync, readFileSync } from 'node:fs';
+const repo = fileURLToPath(new URL('..', import.meta.url));
+
+test('real repo passes check', () => {
+  const r = check(repo);
+  assert.deepEqual(r, { banned: [], oversize: [] });
+});
+
+test('verification-contract rule exists with always_on trigger and the three gates', () => {
+  const f = join(repo, 'rules/verification-contract.md');
+  assert.ok(existsSync(f));
+  const t = readFileSync(f, 'utf8');
+  assert.match(t, /^---\ntrigger: always_on\n---\n/);
+  for (const g of ['Gate 1 spec approved', 'Gate 2 plan approved', 'Gate 3 VERIFY.md accepted']) assert.ok(t.includes(g), g);
+  for (const k of ['test', 'command', 'artifact', 'CORE.lock', '/verify']) assert.ok(t.includes(k), k);
+});
