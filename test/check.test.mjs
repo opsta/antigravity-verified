@@ -78,3 +78,51 @@ test('verification-contract rule exists with always_on trigger and the three gat
   for (const g of ['Gate 1 spec approved', 'Gate 2 plan approved', 'Gate 3 VERIFY.md accepted']) assert.ok(t.includes(g), g);
   for (const k of ['test', 'command', 'artifact', 'CORE.lock', '/verify']) assert.ok(t.includes(k), k);
 });
+
+function frontmatter(file) {
+  const t = readFileSync(join(repo, file), 'utf8');
+  const m = t.match(/^---\n([\s\S]*?)\n---\n/);
+  assert.ok(m, `${file} has frontmatter`);
+  const fm = {};
+  let key = null;
+  for (const line of m[1].split('\n')) {
+    const kv = line.match(/^([A-Za-z]+):\s*(.*)$/);
+    const item = line.match(/^\s+-\s+(.+)$/);
+    if (kv) { key = kv[1]; fm[key] = kv[2] === '' ? [] : kv[2]; }
+    else if (item && Array.isArray(fm[key])) fm[key].push(item[1]);
+  }
+  return fm;
+}
+
+test('verify skill and template exist with name and description', () => {
+  assert.ok(existsSync(join(repo, 'skills/verify/assets/VERIFY.template.md')));
+  const fm = frontmatter('skills/verify/SKILL.md');
+  assert.equal(fm.name, 'verify');
+  assert.ok(fm.description.length > 10);
+});
+
+test('template has the VERIFY.md table, sections and Gate 3 line', () => {
+  const t = readFileSync(join(repo, 'skills/verify/assets/VERIFY.template.md'), 'utf8');
+  assert.ok(t.includes('| # | Acceptance criterion | Evidence kind | Evidence | Result |'));
+  for (const s of ['Untested criteria', 'Tests modified', 'Core files touched']) assert.ok(t.includes(s), s);
+  assert.ok(t.includes('Gate 3: awaiting human acceptance'));
+});
+
+test('verifier agent: required keys, read-only tools', () => {
+  const fm = frontmatter('agents/verifier.md');
+  assert.equal(fm.name, 'verifier');
+  assert.ok(fm.description);
+  assert.equal(fm.model, 'flash');
+  assert.equal(fm.commandExecutionPolicy, 'sandbox');
+  assert.ok(Array.isArray(fm.tools) && fm.tools.length > 0);
+  for (const id of fm.tools) assert.doesNotMatch(id, /edit|write|replace|create/i, id);
+  assert.deepEqual([...fm.tools].sort(), ['grep_search', 'run_command', 'view_file']);
+});
+
+test('ui-checker agent: required keys, no edit tools', () => {
+  const fm = frontmatter('agents/ui-checker.md');
+  assert.equal(fm.name, 'ui-checker');
+  assert.ok(fm.description);
+  assert.equal(fm.model, 'flash');
+  for (const id of fm.tools ?? []) assert.doesNotMatch(id, /edit|write|replace|create/i, id);
+});
