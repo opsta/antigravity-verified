@@ -5,11 +5,11 @@ Contract: <command> (exit <code>)
 
 | # | Acceptance criterion | Evidence kind | Evidence | Result |
 |---|---|---|---|---|
-| 1 | <criterion text> | test / command / artifact | <test name, command + exit code, or file path> | pass / fail |
+| 1 | <criterion text> | test / command / artifact | <test name, command + exit code, or file path> | pass / fail / not evidenced: <why> |
 
 ## Untested criteria
 
-<criteria with no evidence, or "none">
+<every "not evidenced" criterion, or "none">
 
 ## Tests modified
 

@@ -10,8 +10,11 @@ a check that the finished work meets every acceptance criterion, with evidence, 
 
 - `rules/verification-contract.md`: always on. Done means every acceptance criterion has evidence.
   Tests are never edited to pass. Files in `CORE.lock` are never edited.
-- `skills/verify`: the `/verify` skill. Runs the contract command, calls the subagents, writes `VERIFY.md`.
-- `agents/verifier.md`: an independent, read-only checker with a fresh context.
+- `skills/verify`: the `/verify` skill. Runs the contract, the tests, `git diff --stat` and `git status`,
+  hands their output to the verifier, writes `VERIFY.md`.
+- `agents/verifier.md`: an independent checker with a fresh context. It only reads files and the output it is
+  given and runs no commands, so it never waits on an approval prompt. A criterion it cannot prove is
+  `not evidenced`, never `fail`.
 - `agents/ui-checker.md`: optional. Walks through up to 3 `[ui]` criteria in a browser and saves screenshots.
 
 ## Install

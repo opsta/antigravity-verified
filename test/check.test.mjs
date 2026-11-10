@@ -116,7 +116,7 @@ test('template has the VERIFY.md table, sections and Gate 3 line', () => {
   assert.ok(t.includes('Gate 3: awaiting human acceptance'));
 });
 
-test('verifier agent: required keys, read-only tools', () => {
+test('verifier agent: required keys, read-only tools, no commands', () => {
   const fm = frontmatter('agents/verifier.md');
   assert.equal(fm.name, 'verifier');
   assert.ok(fm.description);
@@ -124,7 +124,17 @@ test('verifier agent: required keys, read-only tools', () => {
   assert.equal(fm.commandExecutionPolicy, 'sandbox');
   assert.ok(Array.isArray(fm.tools) && fm.tools.length > 0);
   for (const id of fm.tools) assert.doesNotMatch(id, /edit|write|replace|create/i, id);
-  assert.deepEqual([...fm.tools].sort(), ['grep_search', 'run_command', 'view_file']);
+  // Subagent permission prompts may not reach the main screen and time out, so the verifier runs nothing.
+  assert.deepEqual([...fm.tools].sort(), ['grep_search', 'view_file']);
+  const body = readFileSync(join(repo, 'agents/verifier.md'), 'utf8');
+  assert.ok(body.includes('not evidenced'), 'verifier reports missing evidence as not evidenced');
+});
+
+test('verify skill: main agent runs the evidence commands and passes them to the verifier', () => {
+  const t = readFileSync(join(repo, 'skills/verify/SKILL.md'), 'utf8');
+  for (const k of ['subagents run none', '--reporter=verbose', 'git diff --stat', 'git status --short', 'not evidenced', 'Gate 3: awaiting human acceptance']) {
+    assert.ok(t.includes(k), k);
+  }
 });
 
 test('ui-checker agent: required keys, no edit tools', () => {
